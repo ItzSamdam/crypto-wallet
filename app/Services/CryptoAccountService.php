@@ -27,4 +27,24 @@ class CryptoAccountService
     {
         return $this->cryptoAccountRepository->getAccountTransactions($data);
     }
+
+    public function getMarketPrice(string $coinType)
+    {
+        $response = Http::get('https://api.coingecko.com/api/v3/simple/price', [
+            'ids' => $coinType,
+            'vs_currencies' => 'ngn', // You can change this to get prices in other currencies
+        ]);
+
+        return $response->json()[$coinType]['usd'] ?? null;
+    }
+
+    public function getMarketPrices(array $coinTypes)
+    {
+        $response = Http::get('https://api.coingecko.com/api/v3/simple/price', [
+            'ids' => implode(',', $coinTypes),
+            'vs_currencies' => 'ngn', // You can change this to get prices in other currencies
+        ]);
+
+        return $response->json();
+    }
 }
